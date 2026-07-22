@@ -30,6 +30,7 @@ export class LoginPage {
   }
 
   async expectPageElementsVisible() {
+    await expect(this.page).toHaveTitle(/Swag Labs/);
     await expect(this.logo).toBeVisible();
     await expect(this.usernameInput).toBeVisible();
     await expect(this.passwordInput).toBeVisible();
@@ -41,6 +42,13 @@ export class LoginPage {
     await expect(this.errorMessage).toBeVisible();
     await expect(this.errorMessage).toHaveText(
       'Epic sadface: Username and password do not match any user in this service'
+    );
+  }
+
+  async expectLockedOutErrorMessage() {
+    await expect(this.errorMessage).toBeVisible();
+    await expect(this.errorMessage).toHaveText(
+      'Epic sadface: Sorry, this user has been locked out.'
     );
   }
 }
