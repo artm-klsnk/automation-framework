@@ -1,5 +1,7 @@
 import { expect, Locator, Page } from '@playwright/test';
 
+export type SortOption = 'az' | 'za' | 'lohi' | 'hilo';
+
 export class ProductsPage {
   readonly page: Page;
   readonly menuButton: Locator;
@@ -8,6 +10,7 @@ export class ProductsPage {
   readonly title: Locator;
   readonly sortContainer: Locator;
   readonly inventoryContainer: Locator;
+  readonly inventoryItemName: Locator;
   readonly inventoryItemDesc: Locator;
   readonly inventoryItemPrice: Locator;
   readonly backpackImage: Locator;
@@ -43,6 +46,7 @@ export class ProductsPage {
     this.title = page.getByTestId('title');
     this.sortContainer = page.getByTestId('product-sort-container');
     this.inventoryContainer = page.getByTestId('inventory-container');
+    this.inventoryItemName = page.getByTestId('inventory-item-name');
     this.inventoryItemDesc = page.getByTestId('inventory-item-desc');
     this.inventoryItemPrice = page.getByTestId('inventory-item-price');
     this.backpackImage = page.getByTestId('inventory-item-sauce-labs-backpack-img');
@@ -73,6 +77,10 @@ export class ProductsPage {
 
   async goto() {
     await this.page.goto('/inventory.html');
+  }
+
+  async selectSortOption(option: SortOption) {
+    await this.sortContainer.selectOption(option);
   }
 
   async addAllProductsToCart() {
@@ -129,5 +137,34 @@ export class ProductsPage {
     await expect(this.removeOnesieButton).toBeVisible();
     await expect(this.addAllTheThingsTShirtToCartButton).toBeHidden();
     await expect(this.removeAllTheThingsTShirtButton).toBeVisible();
+  }
+
+  async expectItemsSortedByNameAscending() {
+    const names = await this.inventoryItemName.allTextContents();
+    const sortedNames = [...names].sort((a, b) => a.localeCompare(b));
+    expect(names).toEqual(sortedNames);
+  }
+
+  async expectItemsSortedByNameDescending() {
+    const names = await this.inventoryItemName.allTextContents();
+    const sortedNames = [...names].sort((a, b) => b.localeCompare(a));
+    expect(names).toEqual(sortedNames);
+  }
+
+  async expectItemsSortedByPriceAscending() {
+    const prices = await this.getItemPrices();
+    const sortedPrices = [...prices].sort((a, b) => a - b);
+    expect(prices).toEqual(sortedPrices);
+  }
+
+  async expectItemsSortedByPriceDescending() {
+    const prices = await this.getItemPrices();
+    const sortedPrices = [...prices].sort((a, b) => b - a);
+    expect(prices).toEqual(sortedPrices);
+  }
+
+  private async getItemPrices(): Promise<number[]> {
+    const priceTexts = await this.inventoryItemPrice.allTextContents();
+    return priceTexts.map((price) => parseFloat(price.replace('$', '')));
   }
 }
