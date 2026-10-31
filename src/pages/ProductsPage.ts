@@ -1,7 +1,9 @@
 import { expect, Locator, Page } from '@playwright/test';
 import { products } from '@data/products';
+import { Footer } from '@pages/components/Footer';
 
 export type SortOption = 'az' | 'za' | 'lohi' | 'hilo';
+export type Product = keyof typeof products;
 
 export class ProductCard {
   readonly page: Page;
@@ -44,13 +46,9 @@ export class ProductsPage {
   readonly inventoryItemName: Locator;
   readonly inventoryItemDesc: Locator;
   readonly inventoryItemPrice: Locator;
-  readonly footer: Locator;
-  readonly xLink: Locator;
-  readonly facebookLink: Locator;
-  readonly linkedinLink: Locator;
-  readonly footerCopy: Locator;
+  readonly footer: Footer;
   readonly shoppingCartBadge: Locator;
-  readonly productCards: ProductCard[];
+  readonly cards: Record<Product, ProductCard>;
 
   constructor(page: Page) {
     this.page = page;
@@ -63,13 +61,11 @@ export class ProductsPage {
     this.inventoryItemName = page.getByTestId('inventory-item-name');
     this.inventoryItemDesc = page.getByTestId('inventory-item-desc');
     this.inventoryItemPrice = page.getByTestId('inventory-item-price');
-    this.footer = page.getByTestId('footer');
-    this.xLink = page.getByTestId('social-x');
-    this.facebookLink = page.getByTestId('social-facebook');
-    this.linkedinLink = page.getByTestId('social-linkedin');
-    this.footerCopy = page.getByTestId('footer-copy');
+    this.footer = new Footer(page);
     this.shoppingCartBadge = page.getByTestId('shopping-cart-badge');
-    this.productCards = Object.values(products).map((slug) => new ProductCard(page, slug));
+    this.cards = Object.fromEntries(
+      Object.entries(products).map(([name, slug]) => [name, new ProductCard(page, slug)])
+    ) as Record<Product, ProductCard>;
   }
 
   async goto() {
@@ -80,10 +76,18 @@ export class ProductsPage {
     await this.sortContainer.selectOption(option);
   }
 
-  async addAllProductsToCart() {
-    for (const product of this.productCards) {
-      await product.addToCart();
+  card(product: Product) {
+    return this.cards[product];
+  }
+
+  async addToCart(...items: Product[]) {
+    for (const item of items) {
+      await this.card(item).addToCart();
     }
+  }
+
+  async addAllProductsToCart() {
+    await this.addToCart(...(Object.keys(this.cards) as Product[]));
   }
 
   async expectPageElementsVisible() {
@@ -95,22 +99,18 @@ export class ProductsPage {
     await expect(this.inventoryContainer).toBeVisible();
     await expect(this.inventoryItemDesc.first()).toBeVisible();
     await expect(this.inventoryItemPrice.first()).toBeVisible();
-    for (const product of this.productCards) {
+    for (const product of Object.values(this.cards)) {
       await product.expectVisible();
     }
-    await expect(this.footer).toBeVisible();
-    await expect(this.xLink).toBeVisible();
-    await expect(this.facebookLink).toBeVisible();
-    await expect(this.linkedinLink).toBeVisible();
-    await expect(this.footerCopy).toBeVisible();
+    await this.footer.expectVisible();
   }
 
   async expectCartBadgeCount() {
-    await expect(this.shoppingCartBadge).toHaveText(String(this.productCards.length));
+    await expect(this.shoppingCartBadge).toHaveText(String(Object.keys(this.cards).length));
   }
 
   async expectAllAddToCartButtonsChangedToRemove() {
-    for (const product of this.productCards) {
+    for (const product of Object.values(this.cards)) {
       await product.expectInCart();
     }
   }
