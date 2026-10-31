@@ -66,6 +66,7 @@ tests/                 # Spec files
 ## Roadmap
 
 - [x] Cart flows (view, add, remove)
+- [ ] Remove random data when selecting products
 - [ ] Checkout flow
 - [ ] CI with GitHub Actions
 - [ ] Allure reporting
