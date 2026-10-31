@@ -54,7 +54,7 @@ tests/                 # Spec files
   (`login(...)` → `expectLockedOutErrorMessage()`), with no raw `expect` calls for page state.
 - **Actions and assertions are separated.** Action methods only perform steps;
   `expect*` methods only verify state.
-- **Stable locators.** Elements are located by `data-test` attributes via `getByTestId`, not CSS classes.
+- **Stable locators.** Elements are located by `data-test` attributes via `getByTestId`, not CSS classes, where available.
 - **Component objects for repeated UI.** A product card (`ProductCard`) or cart line (`CartItem`) is
   built from a product slug, so locators are generated rather than duplicated. Chrome shared by every
   page — menu, logo, title, cart badge (`Header`) and the social/footer links (`Footer`) — is its own
