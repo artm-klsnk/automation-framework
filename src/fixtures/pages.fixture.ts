@@ -1,11 +1,14 @@
 import { test as base } from '@playwright/test';
 import { LoginPage } from '@pages/LoginPage';
 import { ProductsPage } from '@pages/ProductsPage';
+import { CartPage } from '@pages/CartPage';
 import { users } from '@data/users';
 
 type Pages = {
   loginPage: LoginPage;
+  regularUserSession: void;
   productPageForRegularUser: ProductsPage;
+  cartPageForRegularUser: CartPage;
 };
 
 export const test = base.extend<Pages>({
@@ -13,11 +16,17 @@ export const test = base.extend<Pages>({
     const loginPage = new LoginPage(page);
     await use(loginPage);
   },
-  productPageForRegularUser: async ({ page }, use) => {
+  regularUserSession: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.login(users.standard.username, users.standard.password);
+    await use();
+  },
+  productPageForRegularUser: async ({ page, regularUserSession }, use) => {
     await use(new ProductsPage(page));
+  },
+  cartPageForRegularUser: async ({ page, regularUserSession }, use) => {
+    await use(new CartPage(page));
   },
 });
 
