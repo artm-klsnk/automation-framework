@@ -1,6 +1,37 @@
 import { expect, Locator, Page } from '@playwright/test';
+import { products } from '@data/products';
 
 export type SortOption = 'az' | 'za' | 'lohi' | 'hilo';
+
+export class ProductCard {
+  readonly page: Page;
+  readonly slug: string;
+  readonly image: Locator;
+  readonly addToCartButton: Locator;
+  readonly removeButton: Locator;
+
+  constructor(page: Page, slug: string) {
+    this.page = page;
+    this.slug = slug;
+    this.image = page.getByTestId(`inventory-item-${slug}-img`);
+    this.addToCartButton = page.getByTestId(`add-to-cart-${slug}`);
+    this.removeButton = page.getByTestId(`remove-${slug}`);
+  }
+
+  async addToCart() {
+    await this.addToCartButton.click();
+  }
+
+  async expectVisible() {
+    await expect(this.image).toBeVisible();
+    await expect(this.addToCartButton).toBeVisible();
+  }
+
+  async expectInCart() {
+    await expect(this.addToCartButton).toBeHidden();
+    await expect(this.removeButton).toBeVisible();
+  }
+}
 
 export class ProductsPage {
   readonly page: Page;
@@ -13,30 +44,13 @@ export class ProductsPage {
   readonly inventoryItemName: Locator;
   readonly inventoryItemDesc: Locator;
   readonly inventoryItemPrice: Locator;
-  readonly backpackImage: Locator;
-  readonly addBackpackToCartButton: Locator;
-  readonly bikeLightImage: Locator;
-  readonly addBikeLightToCartButton: Locator;
-  readonly boltTShirtImage: Locator;
-  readonly addBoltTShirtToCartButton: Locator;
-  readonly fleeceJacketImage: Locator;
-  readonly addFleeceJacketToCartButton: Locator;
-  readonly onesieImage: Locator;
-  readonly addOnesieToCartButton: Locator;
-  readonly allTheThingsTShirtImage: Locator;
-  readonly addAllTheThingsTShirtToCartButton: Locator;
   readonly footer: Locator;
-  readonly twitterLink: Locator;
+  readonly xLink: Locator;
   readonly facebookLink: Locator;
   readonly linkedinLink: Locator;
   readonly footerCopy: Locator;
   readonly shoppingCartBadge: Locator;
-  readonly removeBackpackButton: Locator;
-  readonly removeBikeLightButton: Locator;
-  readonly removeBoltTShirtButton: Locator;
-  readonly removeFleeceJacketButton: Locator;
-  readonly removeOnesieButton: Locator;
-  readonly removeAllTheThingsTShirtButton: Locator;
+  readonly productCards: ProductCard[];
 
   constructor(page: Page) {
     this.page = page;
@@ -49,30 +63,13 @@ export class ProductsPage {
     this.inventoryItemName = page.getByTestId('inventory-item-name');
     this.inventoryItemDesc = page.getByTestId('inventory-item-desc');
     this.inventoryItemPrice = page.getByTestId('inventory-item-price');
-    this.backpackImage = page.getByTestId('inventory-item-sauce-labs-backpack-img');
-    this.addBackpackToCartButton = page.getByTestId('add-to-cart-sauce-labs-backpack');
-    this.bikeLightImage = page.getByTestId('inventory-item-sauce-labs-bike-light-img');
-    this.addBikeLightToCartButton = page.getByTestId('add-to-cart-sauce-labs-bike-light');
-    this.boltTShirtImage = page.getByTestId('inventory-item-sauce-labs-bolt-t-shirt-img');
-    this.addBoltTShirtToCartButton = page.getByTestId('add-to-cart-sauce-labs-bolt-t-shirt');
-    this.fleeceJacketImage = page.getByTestId('inventory-item-sauce-labs-fleece-jacket-img');
-    this.addFleeceJacketToCartButton = page.getByTestId('add-to-cart-sauce-labs-fleece-jacket');
-    this.onesieImage = page.getByTestId('inventory-item-sauce-labs-onesie-img');
-    this.addOnesieToCartButton = page.getByTestId('add-to-cart-sauce-labs-onesie');
-    this.allTheThingsTShirtImage = page.getByTestId('inventory-item-test.allthethings()-t-shirt-(red)-img');
-    this.addAllTheThingsTShirtToCartButton = page.getByTestId('add-to-cart-test.allthethings()-t-shirt-(red)');
     this.footer = page.getByTestId('footer');
-    this.twitterLink = page.getByTestId('social-twitter');
+    this.xLink = page.getByTestId('social-x');
     this.facebookLink = page.getByTestId('social-facebook');
     this.linkedinLink = page.getByTestId('social-linkedin');
     this.footerCopy = page.getByTestId('footer-copy');
     this.shoppingCartBadge = page.getByTestId('shopping-cart-badge');
-    this.removeBackpackButton = page.getByTestId('remove-sauce-labs-backpack');
-    this.removeBikeLightButton = page.getByTestId('remove-sauce-labs-bike-light');
-    this.removeBoltTShirtButton = page.getByTestId('remove-sauce-labs-bolt-t-shirt');
-    this.removeFleeceJacketButton = page.getByTestId('remove-sauce-labs-fleece-jacket');
-    this.removeOnesieButton = page.getByTestId('remove-sauce-labs-onesie');
-    this.removeAllTheThingsTShirtButton = page.getByTestId('remove-test.allthethings()-t-shirt-(red)');
+    this.productCards = Object.values(products).map((slug) => new ProductCard(page, slug));
   }
 
   async goto() {
@@ -84,12 +81,9 @@ export class ProductsPage {
   }
 
   async addAllProductsToCart() {
-    await this.addBackpackToCartButton.click();
-    await this.addBikeLightToCartButton.click();
-    await this.addBoltTShirtToCartButton.click();
-    await this.addFleeceJacketToCartButton.click();
-    await this.addOnesieToCartButton.click();
-    await this.addAllTheThingsTShirtToCartButton.click();
+    for (const product of this.productCards) {
+      await product.addToCart();
+    }
   }
 
   async expectPageElementsVisible() {
@@ -101,42 +95,24 @@ export class ProductsPage {
     await expect(this.inventoryContainer).toBeVisible();
     await expect(this.inventoryItemDesc.first()).toBeVisible();
     await expect(this.inventoryItemPrice.first()).toBeVisible();
-    await expect(this.backpackImage).toBeVisible();
-    await expect(this.addBackpackToCartButton).toBeVisible();
-    await expect(this.bikeLightImage).toBeVisible();
-    await expect(this.addBikeLightToCartButton).toBeVisible();
-    await expect(this.boltTShirtImage).toBeVisible();
-    await expect(this.addBoltTShirtToCartButton).toBeVisible();
-    await expect(this.fleeceJacketImage).toBeVisible();
-    await expect(this.addFleeceJacketToCartButton).toBeVisible();
-    await expect(this.onesieImage).toBeVisible();
-    await expect(this.addOnesieToCartButton).toBeVisible();
-    await expect(this.allTheThingsTShirtImage).toBeVisible();
-    await expect(this.addAllTheThingsTShirtToCartButton).toBeVisible();
+    for (const product of this.productCards) {
+      await product.expectVisible();
+    }
     await expect(this.footer).toBeVisible();
-    await expect(this.twitterLink).toBeVisible();
+    await expect(this.xLink).toBeVisible();
     await expect(this.facebookLink).toBeVisible();
     await expect(this.linkedinLink).toBeVisible();
     await expect(this.footerCopy).toBeVisible();
   }
 
-  async expectCartBadgeCount(count: number) {
-    await expect(this.shoppingCartBadge).toHaveText(String(count));
+  async expectCartBadgeCount() {
+    await expect(this.shoppingCartBadge).toHaveText(String(this.productCards.length));
   }
 
   async expectAllAddToCartButtonsChangedToRemove() {
-    await expect(this.addBackpackToCartButton).toBeHidden();
-    await expect(this.removeBackpackButton).toBeVisible();
-    await expect(this.addBikeLightToCartButton).toBeHidden();
-    await expect(this.removeBikeLightButton).toBeVisible();
-    await expect(this.addBoltTShirtToCartButton).toBeHidden();
-    await expect(this.removeBoltTShirtButton).toBeVisible();
-    await expect(this.addFleeceJacketToCartButton).toBeHidden();
-    await expect(this.removeFleeceJacketButton).toBeVisible();
-    await expect(this.addOnesieToCartButton).toBeHidden();
-    await expect(this.removeOnesieButton).toBeVisible();
-    await expect(this.addAllTheThingsTShirtToCartButton).toBeHidden();
-    await expect(this.removeAllTheThingsTShirtButton).toBeVisible();
+    for (const product of this.productCards) {
+      await product.expectInCart();
+    }
   }
 
   async expectItemsSortedByNameAscending() {
