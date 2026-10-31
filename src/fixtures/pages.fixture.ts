@@ -2,6 +2,7 @@ import { test as base } from '@playwright/test';
 import { LoginPage } from '@pages/LoginPage';
 import { ProductsPage } from '@pages/ProductsPage';
 import { CartPage } from '@pages/CartPage';
+import { CheckoutPage } from '@pages/CheckoutPage';
 import { users } from '@data/users';
 
 type Pages = {
@@ -9,6 +10,7 @@ type Pages = {
   regularUserSession: void;
   productPageForRegularUser: ProductsPage;
   cartPageForRegularUser: CartPage;
+  checkoutPageForRegularUser: CheckoutPage;
 };
 
 export const test = base.extend<Pages>({
@@ -27,6 +29,9 @@ export const test = base.extend<Pages>({
   },
   cartPageForRegularUser: async ({ page, regularUserSession }, use) => {
     await use(new CartPage(page));
+  },
+  checkoutPageForRegularUser: async ({ page, regularUserSession }, use) => {
+    await use(new CheckoutPage(page));
   },
 });
 
