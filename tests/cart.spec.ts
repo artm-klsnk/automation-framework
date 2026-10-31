@@ -1,27 +1,27 @@
 import { test } from '@fixtures/pages.fixture';
-import { randomProductName, randomProductNames } from '@data/products';
+import { productNames, randomProductNames } from '@data/products';
 
 test('should display cart page with no products added to cart', async ({ cartPageForRegularUser }) => {
   await cartPageForRegularUser.goto();
   await cartPageForRegularUser.expectPageElementsVisibleNoProductsAddedToCart();
 });
 
-test('should show the selected product in the cart matching the product page description and price', async ({
-  productPageForRegularUser,
-  cartPageForRegularUser,
-}) => {
-  const product = randomProductName();
+for (const product of productNames) {
+  test(`should show ${product} in the cart matching the product page description and price`, async ({
+    productPageForRegularUser,
+    cartPageForRegularUser,
+  }) => {
+    await productPageForRegularUser.goto();
+    const card = productPageForRegularUser.card(product);
+    const description = await card.description.innerText();
+    const price = await card.price.innerText();
+    await productPageForRegularUser.addToCart(product);
+    await productPageForRegularUser.header.expectCartBadgeCount(1);
 
-  await productPageForRegularUser.goto();
-  const card = productPageForRegularUser.card(product);
-  const description = await card.description.innerText();
-  const price = await card.price.innerText();
-  await productPageForRegularUser.addToCart(product);
-  await productPageForRegularUser.header.expectCartBadgeCount(1);
-
-  await cartPageForRegularUser.goto();
-  await cartPageForRegularUser.expectItemInCart(product, description, price, 1);
-});
+    await cartPageForRegularUser.goto();
+    await cartPageForRegularUser.expectItemInCart(product, description, price, 1);
+  });
+}
 
 test('should remove a single product from a cart of three products', async ({
   productPageForRegularUser,

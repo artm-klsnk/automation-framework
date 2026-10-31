@@ -14,7 +14,7 @@ UI test automation framework for [Swag Labs](https://www.saucedemo.com) — a de
 | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Login    | Page elements, valid login, invalid credentials, locked-out user                                                                                   |
 | Products | Page elements, adding all products to cart (badge + button state), sorting by name and price                                                      |
-| Cart     | Empty-cart state, added product matches the product page (description, price, quantity, remove button), removing one/several/all products (card removal + badge count) |
+| Cart     | Empty-cart state, added product matches the product page (description, price, quantity, remove button) — looped over every product, removing one/several/all products (card removal + badge count) |
 
 ## Getting started
 
@@ -44,7 +44,7 @@ src/
     CartPage.ts       # includes CartItem
     components/       # Header, Footer — shared chrome reused across pages
   fixtures/           # Playwright fixtures exposing page objects to tests
-  data/                # Static test data: users, products (slugs, Product type, random selectors)
+  data/                # Static test data: users, products (slugs, Product type, name list, random selectors)
 tests/                 # Spec files
 ```
 
@@ -54,7 +54,7 @@ tests/                 # Spec files
   (`login(...)` → `expectLockedOutErrorMessage()`), with no raw `expect` calls for page state.
 - **Actions and assertions are separated.** Action methods only perform steps;
   `expect*` methods only verify state.
-- **Stable locators.** Elements are located by `data-test` attributes via `getByTestId`, not CSS classes.
+- **Stable locators.** Elements are located by `data-test` attributes via `getByTestId`, not CSS classes, where possible.
 - **Component objects for repeated UI.** A product card (`ProductCard`) or cart line (`CartItem`) is
   built from a product slug, so locators are generated rather than duplicated. Chrome shared by every
   page — menu, logo, title, cart badge (`Header`) and the social/footer links (`Footer`) — is its own
