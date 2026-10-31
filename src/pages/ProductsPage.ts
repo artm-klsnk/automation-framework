@@ -11,6 +11,8 @@ export class ProductCard {
   readonly image: Locator;
   readonly addToCartButton: Locator;
   readonly removeButton: Locator;
+  readonly description: Locator;
+  readonly price: Locator;
 
   constructor(page: Page, slug: string) {
     this.page = page;
@@ -18,6 +20,9 @@ export class ProductCard {
     this.image = page.getByTestId(`inventory-item-${slug}-img`);
     this.addToCartButton = page.getByTestId(`add-to-cart-${slug}`);
     this.removeButton = page.getByTestId(`remove-${slug}`);
+    const container = page.getByTestId('inventory-item').filter({ has: this.image });
+    this.description = container.getByTestId('inventory-item-desc');
+    this.price = container.getByTestId('inventory-item-price');
   }
 
   async addToCart() {
@@ -105,8 +110,8 @@ export class ProductsPage {
     await this.footer.expectVisible();
   }
 
-  async expectCartBadgeCount() {
-    await expect(this.shoppingCartBadge).toHaveText(String(Object.keys(this.cards).length));
+  async expectCartBadgeCount(count: number) {
+    await expect(this.shoppingCartBadge).toHaveText(String(count));
   }
 
   async expectAllAddToCartButtonsChangedToRemove() {

@@ -10,7 +10,7 @@ test('should update cart badge count and button labels when all products are add
 }) => {
   await productPageForRegularUser.goto();
   await productPageForRegularUser.addAllProductsToCart();
-  await productPageForRegularUser.expectCartBadgeCount();
+  await productPageForRegularUser.expectCartBadgeCount(Object.keys(productPageForRegularUser.cards).length);
   await productPageForRegularUser.expectAllAddToCartButtonsChangedToRemove();
 });
 
