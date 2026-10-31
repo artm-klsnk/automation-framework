@@ -6,6 +6,7 @@ import { products, type Product } from '@data/products';
 export class CartItem {
   readonly page: Page;
   readonly slug: string;
+  readonly name: Locator;
   readonly quantity: Locator;
   readonly description: Locator;
   readonly price: Locator;
@@ -16,6 +17,7 @@ export class CartItem {
     this.slug = slug;
     this.removeButton = page.getByTestId(`remove-${slug}`);
     const container = page.getByTestId('inventory-item').filter({ has: this.removeButton });
+    this.name = container.getByTestId('inventory-item-name');
     this.quantity = container.getByTestId('item-quantity');
     this.description = container.getByTestId('inventory-item-desc');
     this.price = container.getByTestId('inventory-item-price');
@@ -25,7 +27,12 @@ export class CartItem {
     await this.removeButton.click();
   }
 
+  async open() {
+    await this.name.click();
+  }
+
   async expectShown(description: string, price: string, quantity: string) {
+    await expect(this.name).toBeVisible();
     await expect(this.description).toHaveText(description);
     await expect(this.price).toHaveText(price);
     await expect(this.quantity).toHaveText(quantity);

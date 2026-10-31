@@ -64,3 +64,21 @@ test('should remove all products from the cart', async ({ productPageForRegularU
   await cartPageForRegularUser.expectPageElementsVisibleNoProductsAddedToCart();
   await cartPageForRegularUser.header.expectCartBadgeCount(0);
 });
+
+test('should open the specific product page when clicking a product title in the cart', async ({
+  productPageForRegularUser,
+  cartPageForRegularUser,
+  productDetailPageForRegularUser,
+}) => {
+  await productPageForRegularUser.goto();
+  await productPageForRegularUser.addAllProductsToCart();
+
+  for (const product of productNames) {
+    await cartPageForRegularUser.goto();
+    const item = cartPageForRegularUser.item(product);
+    const name = await item.name.innerText();
+
+    await item.open();
+    await productDetailPageForRegularUser.expectShowsProduct(name);
+  }
+});
