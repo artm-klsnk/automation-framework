@@ -1,9 +1,9 @@
 import { expect, Locator, Page } from '@playwright/test';
-import { products } from '@data/products';
+import { products, type Product } from '@data/products';
 import { Footer } from '@pages/components/Footer';
+import { Header } from '@pages/components/Header';
 
 export type SortOption = 'az' | 'za' | 'lohi' | 'hilo';
-export type Product = keyof typeof products;
 
 export class ProductCard {
   readonly page: Page;
@@ -42,32 +42,24 @@ export class ProductCard {
 
 export class ProductsPage {
   readonly page: Page;
-  readonly menuButton: Locator;
-  readonly logo: Locator;
-  readonly shoppingCartLink: Locator;
-  readonly title: Locator;
+  readonly header: Header;
   readonly sortContainer: Locator;
   readonly inventoryContainer: Locator;
   readonly inventoryItemName: Locator;
   readonly inventoryItemDesc: Locator;
   readonly inventoryItemPrice: Locator;
   readonly footer: Footer;
-  readonly shoppingCartBadge: Locator;
   readonly cards: Record<Product, ProductCard>;
 
   constructor(page: Page) {
     this.page = page;
-    this.menuButton = page.locator('#react-burger-menu-btn');
-    this.logo = page.locator('.app_logo');
-    this.shoppingCartLink = page.getByTestId('shopping-cart-link');
-    this.title = page.getByTestId('title');
+    this.header = new Header(page);
     this.sortContainer = page.getByTestId('product-sort-container');
     this.inventoryContainer = page.getByTestId('inventory-container');
     this.inventoryItemName = page.getByTestId('inventory-item-name');
     this.inventoryItemDesc = page.getByTestId('inventory-item-desc');
     this.inventoryItemPrice = page.getByTestId('inventory-item-price');
     this.footer = new Footer(page);
-    this.shoppingCartBadge = page.getByTestId('shopping-cart-badge');
     this.cards = Object.fromEntries(
       Object.entries(products).map(([name, slug]) => [name, new ProductCard(page, slug)])
     ) as Record<Product, ProductCard>;
@@ -96,10 +88,7 @@ export class ProductsPage {
   }
 
   async expectPageElementsVisible() {
-    await expect(this.menuButton).toBeVisible();
-    await expect(this.logo).toBeVisible();
-    await expect(this.shoppingCartLink).toBeVisible();
-    await expect(this.title).toBeVisible();
+    await this.header.expectVisible();
     await expect(this.sortContainer).toBeVisible();
     await expect(this.inventoryContainer).toBeVisible();
     await expect(this.inventoryItemDesc.first()).toBeVisible();
@@ -108,10 +97,6 @@ export class ProductsPage {
       await product.expectVisible();
     }
     await this.footer.expectVisible();
-  }
-
-  async expectCartBadgeCount(count: number) {
-    await expect(this.shoppingCartBadge).toHaveText(String(count));
   }
 
   async expectAllAddToCartButtonsChangedToRemove() {

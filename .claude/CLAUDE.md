@@ -29,6 +29,14 @@ Playwright + TypeScript UI test suite for [saucedemo.com](https://www.saucedemo.
 - Use fixtures (`loginPage`, etc.) from `@fixtures/pages.fixture`; don't construct page objects manually in tests.
 - Credentials and other reusable test inputs come from `src/data/*` (e.g. `users.standard.username`), never as string literals in a test.
 
+## Keeping README.md in sync
+
+`README.md` documents the current state of the suite — it is not aspirational. Whenever a change in this session touches any of the following, update `README.md` in the same change:
+
+- Adding/removing a page object or component (`src/pages/**`) → update the "Project structure" section.
+- Adding/removing a spec file or a meaningfully new scenario (`tests/**`) → update the "What's covered" table.
+- Finishing or starting work on a roadmap item (e.g. Cart, Checkout, CI) → update the "Roadmap" checklist.
+
 ## Commands
 
 ```bash
