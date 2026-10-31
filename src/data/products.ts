@@ -7,11 +7,13 @@ export const products = {
   allTheThingsTShirt: 'test.allthethings()-t-shirt-(red)',
 } as const satisfies Record<string, string>;
 
-export function randomProductNames(count: number): (keyof typeof products)[] {
-  const names = Object.keys(products) as (keyof typeof products)[];
+export type Product = keyof typeof products;
+
+export function randomProductNames(count: number): Product[] {
+  const names = Object.keys(products) as Product[];
   return [...names].sort(() => Math.random() - 0.5).slice(0, count);
 }
 
-export function randomProductName(): keyof typeof products {
+export function randomProductName(): Product {
   return randomProductNames(1)[0];
 }

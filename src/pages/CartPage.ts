@@ -1,7 +1,7 @@
 import { expect, Locator, Page } from '@playwright/test';
 import { Footer } from '@pages/components/Footer';
-import { products } from '@data/products';
-import type { Product } from '@pages/ProductsPage';
+import { Header } from '@pages/components/Header';
+import { products, type Product } from '@data/products';
 
 export class CartItem {
   readonly page: Page;
@@ -39,25 +39,23 @@ export class CartItem {
 
 export class CartPage {
   readonly page: Page;
-  readonly title: Locator;
+  readonly header: Header;
   readonly quantityLabel: Locator;
   readonly descriptionLabel: Locator;
   readonly continueShoppingButton: Locator;
   readonly checkoutButton: Locator;
   readonly cartItems: Locator;
-  readonly shoppingCartBadge: Locator;
   readonly footer: Footer;
   readonly items: Record<Product, CartItem>;
 
   constructor(page: Page) {
     this.page = page;
-    this.title = page.getByTestId('title');
+    this.header = new Header(page);
     this.quantityLabel = page.getByTestId('cart-quantity-label');
     this.descriptionLabel = page.getByTestId('cart-desc-label');
     this.continueShoppingButton = page.getByTestId('continue-shopping');
     this.checkoutButton = page.getByTestId('checkout');
     this.cartItems = page.getByTestId('inventory-item');
-    this.shoppingCartBadge = page.getByTestId('shopping-cart-badge');
     this.footer = new Footer(page);
     this.items = Object.fromEntries(
       Object.entries(products).map(([name, slug]) => [name, new CartItem(page, slug)])
@@ -91,7 +89,7 @@ export class CartPage {
   }
 
   async expectPageElementsVisible() {
-    await expect(this.title).toBeVisible();
+    await this.header.expectVisible();
     await expect(this.quantityLabel).toBeVisible();
     await expect(this.descriptionLabel).toBeVisible();
     await expect(this.continueShoppingButton).toBeVisible();
@@ -111,14 +109,6 @@ export class CartPage {
   async expectItemsNotInCart(...items: Product[]) {
     for (const item of items) {
       await this.item(item).expectRemoved();
-    }
-  }
-
-  async expectCartBadgeCount(count: number) {
-    if (count === 0) {
-      await expect(this.shoppingCartBadge).toHaveCount(0);
-    } else {
-      await expect(this.shoppingCartBadge).toHaveText(String(count));
     }
   }
 }

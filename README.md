@@ -10,10 +10,11 @@ UI test automation framework for [Swag Labs](https://www.saucedemo.com) — a de
 
 ## What's covered
 
-| Area | Scenarios |
-|------|-----------|
-| Login | Page elements, valid login, invalid credentials, locked-out user |
-| Products | Page elements, adding all products to cart (badge + button state), sorting by name and price |
+| Area     | Scenarios                                                                                                                                         |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Login    | Page elements, valid login, invalid credentials, locked-out user                                                                                   |
+| Products | Page elements, adding all products to cart (badge + button state), sorting by name and price                                                      |
+| Cart     | Empty-cart state, added product matches the product page (description, price, quantity, remove button), removing one/several/all products (card removal + badge count) |
 
 ## Getting started
 
@@ -37,10 +38,14 @@ npx playwright show-report
 
 ```
 src/
-  pages/      Page objects (LoginPage, ProductsPage, ProductCard)
-  fixtures/   Playwright fixtures exposing page objects to tests
-  data/       Static test data: users, product slugs
-tests/        Spec files
+  pages/
+    LoginPage.ts
+    ProductsPage.ts   # includes ProductCard
+    CartPage.ts       # includes CartItem
+    components/       # Header, Footer — shared chrome reused across pages
+  fixtures/           # Playwright fixtures exposing page objects to tests
+  data/                # Static test data: users, products (slugs, Product type, random selectors)
+tests/                 # Spec files
 ```
 
 ## Design decisions
@@ -50,14 +55,17 @@ tests/        Spec files
 - **Actions and assertions are separated.** Action methods only perform steps;
   `expect*` methods only verify state.
 - **Stable locators.** Elements are located by `data-test` attributes via `getByTestId`, not CSS classes.
-- **Component objects for repeated UI.** Each product card is a `ProductCard` built from a slug,
-  so locators are generated rather than duplicated.
+- **Component objects for repeated UI.** A product card (`ProductCard`) or cart line (`CartItem`) is
+  built from a product slug, so locators are generated rather than duplicated. Chrome shared by every
+  page — menu, logo, title, cart badge (`Header`) and the social/footer links (`Footer`) — is its own
+  component, composed into each page object instead of redeclared per page.
 - **Test data is never inlined.** Credentials and product identifiers come from `src/data`.
-- **Fixtures handle setup.** `productPageForRegularUser` logs in before the test, so specs start
-  from the state they need.
+- **Fixtures handle setup.** `productPageForRegularUser` and `cartPageForRegularUser` share a single
+  login via a `regularUserSession` fixture, so specs start from the state they need without logging in twice.
 
 ## Roadmap
 
+- [x] Cart flows (view, add, remove)
+- [ ] Checkout flow
 - [ ] CI with GitHub Actions
-- [ ] Cart and checkout flows
 - [ ] Allure reporting

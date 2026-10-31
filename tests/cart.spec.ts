@@ -6,7 +6,7 @@ test('should display cart page with no products added to cart', async ({ cartPag
   await cartPageForRegularUser.expectPageElementsVisibleNoProductsAddedToCart();
 });
 
-test('should show the selected product in the cart with its description, price, quantity, and remove button', async ({
+test('should show the selected product in the cart matching the product page description and price', async ({
   productPageForRegularUser,
   cartPageForRegularUser,
 }) => {
@@ -17,7 +17,7 @@ test('should show the selected product in the cart with its description, price, 
   const description = await card.description.innerText();
   const price = await card.price.innerText();
   await productPageForRegularUser.addToCart(product);
-  await productPageForRegularUser.expectCartBadgeCount(1);
+  await productPageForRegularUser.header.expectCartBadgeCount(1);
 
   await cartPageForRegularUser.goto();
   await cartPageForRegularUser.expectItemInCart(product, description, price, 1);
@@ -36,7 +36,7 @@ test('should remove a single product from a cart of three products', async ({
   await cartPageForRegularUser.goto();
   await cartPageForRegularUser.removeFromCart(toRemove);
   await cartPageForRegularUser.expectItemsNotInCart(toRemove);
-  await cartPageForRegularUser.expectCartBadgeCount(selectedProducts.length - 1);
+  await cartPageForRegularUser.header.expectCartBadgeCount(selectedProducts.length - 1);
 });
 
 test('should remove two products from a cart of five products', async ({
@@ -52,7 +52,7 @@ test('should remove two products from a cart of five products', async ({
   await cartPageForRegularUser.goto();
   await cartPageForRegularUser.removeFromCart(...toRemove);
   await cartPageForRegularUser.expectItemsNotInCart(...toRemove);
-  await cartPageForRegularUser.expectCartBadgeCount(selectedProducts.length - toRemove.length);
+  await cartPageForRegularUser.header.expectCartBadgeCount(selectedProducts.length - toRemove.length);
 });
 
 test('should remove all products from the cart', async ({ productPageForRegularUser, cartPageForRegularUser }) => {
@@ -62,5 +62,5 @@ test('should remove all products from the cart', async ({ productPageForRegularU
   await cartPageForRegularUser.goto();
   await cartPageForRegularUser.removeAllProductsFromCart();
   await cartPageForRegularUser.expectPageElementsVisibleNoProductsAddedToCart();
-  await cartPageForRegularUser.expectCartBadgeCount(0);
+  await cartPageForRegularUser.header.expectCartBadgeCount(0);
 });

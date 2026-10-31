@@ -1,9 +1,12 @@
 {
   "name": "automation-framework",
   "version": "1.0.0",
-  "description": "",
+  "description": "Playwright + TypeScript UI test suite for saucedemo.com using the Page Object Model.",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "test:report": "playwright show-report"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/artm-klsnk/automation-framework.git"
