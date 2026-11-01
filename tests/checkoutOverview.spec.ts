@@ -1,14 +1,30 @@
 import { test, expect } from '@fixtures/pages.fixture';
-import { randomProductNames } from '@data/products';
+import { productNames } from '@data/products';
+
+let productPrices: Record<string, string>;
 
 test.beforeEach(async ({ productPageForRegularUser, checkoutOverviewPageForRegularUser }) => {
   await productPageForRegularUser.goto();
-  await productPageForRegularUser.addToCart(...randomProductNames(3));
+  productPrices = Object.fromEntries(
+    await Promise.all(
+      productNames.map(async (product) => {
+        const card = productPageForRegularUser.card(product);
+        return [await card.name.innerText(), await card.price.innerText()];
+      })
+    )
+  );
+  await productPageForRegularUser.addAllProductsToCart();
   await checkoutOverviewPageForRegularUser.goto();
 });
 
 test('should display all page elements', async ({ checkoutOverviewPageForRegularUser }) => {
   await checkoutOverviewPageForRegularUser.expectPageElementsVisible();
+});
+
+test('should display the correct price next to each product', async ({ checkoutOverviewPageForRegularUser }) => {
+  for (const [name, price] of Object.entries(productPrices)) {
+    await checkoutOverviewPageForRegularUser.expectItemPrice(name, price);
+  }
 });
 
 test('should return to the products page when clicking Cancel', async ({

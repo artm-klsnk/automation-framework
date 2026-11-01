@@ -68,4 +68,15 @@ export class CheckoutPageTwo {
     await expect(this.finishButton).toBeVisible();
     await this.footer.expectVisible();
   }
+
+  itemPrice(name: string): Locator {
+    return this.page
+      .getByTestId('inventory-item')
+      .filter({ has: this.page.getByTestId('inventory-item-name').getByText(name, { exact: true }) })
+      .getByTestId('inventory-item-price');
+  }
+
+  async expectItemPrice(name: string, price: string) {
+    await expect(this.itemPrice(name)).toHaveText(price);
+  }
 }
