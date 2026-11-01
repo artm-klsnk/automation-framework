@@ -39,18 +39,16 @@ test('should sort products by price descending', async ({ productPageForRegularU
   await productPageForRegularUser.expectItemsSortedByPriceDescending();
 });
 
-test('should open the specific product page when clicking a product title in the products list', async ({
-  productPageForRegularUser,
-  productDetailPageForRegularUser,
-}) => {
-  await productPageForRegularUser.goto();
-
-  for (const product of productNames) {
+for (const product of productNames) {
+  test(`should open the ${product} detail page when clicking its title in the products list`, async ({
+    productPageForRegularUser,
+    productDetailPageForRegularUser,
+  }) => {
+    await productPageForRegularUser.goto();
     const card = productPageForRegularUser.card(product);
     const name = await card.name.innerText();
 
     await card.open();
     await productDetailPageForRegularUser.expectShowsProduct(name);
-    await productPageForRegularUser.goto();
-  }
-});
+  });
+}

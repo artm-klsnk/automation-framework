@@ -1,8 +1,9 @@
 import { expect, Locator, Page } from '@playwright/test';
 import { Footer } from '@pages/components/Footer';
 import { Header } from '@pages/components/Header';
+import { CustomerInfo } from '@data/customer';
 
-export class CheckoutPageOne {
+export class CheckoutInformationPage {
   readonly page: Page;
   readonly header: Header;
   readonly title: Locator;
@@ -29,7 +30,7 @@ export class CheckoutPageOne {
     await this.page.goto('/checkout-step-one.html');
   }
 
-  async fillCustomerInformation(firstName: string, lastName: string, postalCode: string) {
+  async fillCustomerInformation({ firstName, lastName, postalCode }: CustomerInfo) {
     await this.firstNameInput.fill(firstName);
     await this.lastNameInput.fill(lastName);
     await this.postalCodeInput.fill(postalCode);
