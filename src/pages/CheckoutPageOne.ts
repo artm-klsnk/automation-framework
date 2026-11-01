@@ -2,7 +2,7 @@ import { expect, Locator, Page } from '@playwright/test';
 import { Footer } from '@pages/components/Footer';
 import { Header } from '@pages/components/Header';
 
-export class CheckoutPage {
+export class CheckoutPageOne {
   readonly page: Page;
   readonly header: Header;
   readonly title: Locator;

@@ -2,7 +2,8 @@ import { test as base } from '@playwright/test';
 import { LoginPage } from '@pages/LoginPage';
 import { ProductsPage } from '@pages/ProductsPage';
 import { CartPage } from '@pages/CartPage';
-import { CheckoutPage } from '@pages/CheckoutPage';
+import { CheckoutPageOne } from '@pages/CheckoutPageOne';
+import { CheckoutPageTwo } from '@pages/CheckoutPageTwo';
 import { ProductDetailPage } from '@pages/ProductDetailPage';
 import { users } from '@data/users';
 
@@ -11,7 +12,8 @@ type Pages = {
   regularUserSession: void;
   productPageForRegularUser: ProductsPage;
   cartPageForRegularUser: CartPage;
-  checkoutPageForRegularUser: CheckoutPage;
+  checkoutPageForRegularUser: CheckoutPageOne;
+  checkoutOverviewPageForRegularUser: CheckoutPageTwo;
   productDetailPageForRegularUser: ProductDetailPage;
 };
 
@@ -33,7 +35,10 @@ export const test = base.extend<Pages>({
     await use(new CartPage(page));
   },
   checkoutPageForRegularUser: async ({ page, regularUserSession }, use) => {
-    await use(new CheckoutPage(page));
+    await use(new CheckoutPageOne(page));
+  },
+  checkoutOverviewPageForRegularUser: async ({ page, regularUserSession }, use) => {
+    await use(new CheckoutPageTwo(page));
   },
   productDetailPageForRegularUser: async ({ page, regularUserSession }, use) => {
     await use(new ProductDetailPage(page));

@@ -13,9 +13,10 @@ UI test automation framework for [Swag Labs](https://www.saucedemo.com) — a de
 | Area     | Scenarios                                                                                                                                         |
 | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Login    | Page elements, valid login, invalid credentials, locked-out user                                                                                   |
-| Products | Page elements, adding all products to cart (badge + button state), sorting by name and price                                                      |
+| Products | Page elements, adding all products to cart (badge + button state), sorting by name and price, clicking a product title opens that product's detail page |
 | Cart     | Empty-cart state, added product matches the product page (description, price, quantity, remove button) — looped over every product, removing one/several/all products (card removal + badge count), clicking a product title opens that product's detail page |
 | Checkout (step one) | Page elements, cart badge reflects the number of selected products, required-field validation errors (First Name, Last Name, Postal Code) |
+| Checkout (overview) | Page elements (QTY/description labels, payment/shipping info, price totals), Cancel returns to the products page, Finish completes the order |
 
 ## Getting started
 
@@ -43,8 +44,9 @@ src/
     LoginPage.ts
     ProductsPage.ts   # includes ProductCard
     CartPage.ts       # includes CartItem
-    CheckoutPage.ts   # checkout step one: customer information form
-    ProductDetailPage.ts # single-product detail page opened from a cart item title
+    CheckoutPageOne.ts   # checkout step one: customer information form
+    CheckoutPageTwo.ts   # checkout step two: order overview, payment/shipping info, price totals
+    ProductDetailPage.ts # single-product detail page opened from a product title (products list or cart)
     components/       # Header, Footer — shared chrome reused across pages
   fixtures/           # Playwright fixtures exposing page objects to tests
   data/                # Static test data: users, products (slugs, Product type, name list, random selectors), customer (random valid checkout info)

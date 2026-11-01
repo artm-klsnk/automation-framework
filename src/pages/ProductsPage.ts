@@ -9,6 +9,7 @@ export class ProductCard {
   readonly page: Page;
   readonly slug: string;
   readonly image: Locator;
+  readonly name: Locator;
   readonly addToCartButton: Locator;
   readonly removeButton: Locator;
   readonly description: Locator;
@@ -21,12 +22,17 @@ export class ProductCard {
     this.addToCartButton = page.getByTestId(`add-to-cart-${slug}`);
     this.removeButton = page.getByTestId(`remove-${slug}`);
     const container = page.getByTestId('inventory-item').filter({ has: this.image });
+    this.name = container.getByTestId('inventory-item-name');
     this.description = container.getByTestId('inventory-item-desc');
     this.price = container.getByTestId('inventory-item-price');
   }
 
   async addToCart() {
     await this.addToCartButton.click();
+  }
+
+  async open() {
+    await this.name.click();
   }
 
   async expectVisible() {
