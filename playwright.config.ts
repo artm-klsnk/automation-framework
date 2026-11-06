@@ -11,12 +11,6 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-      use: {
-        baseURL: 'https://www.saucedemo.com',
-        trace: 'on-first-retry',
-        testIdAttribute: 'data-test',
-        headless: !!process.env.CI
-      },
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -29,7 +23,12 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-
+  use: {
+    baseURL: 'https://www.saucedemo.com',
+    trace: 'on-first-retry',
+    testIdAttribute: 'data-test',
+    headless: !!process.env.CI
+  },
   /* Configure projects for major browsers */
   projects: [
     {
