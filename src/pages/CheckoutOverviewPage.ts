@@ -1,6 +1,13 @@
 import { expect, Locator, Page } from '@playwright/test';
 import { Footer } from '@pages/components/Footer';
 import { Header } from '@pages/components/Header';
+import { parsePriceCents } from '@utils/price';
+
+export type OverviewTotals = {
+  itemTotalCents: number;
+  taxCents: number;
+  totalCents: number;
+};
 
 export class CheckoutOverviewPage {
   readonly page: Page;
@@ -82,20 +89,19 @@ export class CheckoutOverviewPage {
     await expect(this.itemPrice(name)).toHaveText(price);
   }
 
-  async expectTotalsCorrect() {
-    const itemPriceTexts = await this.itemPrices.allTextContents();
-    const itemTotalCents = itemPriceTexts.reduce((sum, text) => sum + this.parsePriceCents(text), 0);
-
-    const subtotalCents = this.parsePriceCents(await this.subtotalLabel.innerText());
-    const taxCents = this.parsePriceCents(await this.taxLabel.innerText());
-    const totalCents = this.parsePriceCents(await this.totalLabel.innerText());
-
-    expect(subtotalCents).toBe(itemTotalCents);
-    expect(totalCents).toBe(subtotalCents + taxCents);
+  async getTotals(): Promise<OverviewTotals> {
+    const itemTotalCents = parsePriceCents(await this.subtotalLabel.innerText());
+    const taxCents = parsePriceCents(await this.taxLabel.innerText());
+    const totalCents = parsePriceCents(await this.totalLabel.innerText());
+    return { itemTotalCents, taxCents, totalCents };
   }
 
-  private parsePriceCents(text: string): number {
-    const [, price] = text.match(/\$(\d+\.\d{2})/)!;
-    return Math.round(parseFloat(price) * 100);
+  async expectTotalsCorrect() {
+    const itemPriceTexts = await this.itemPrices.allTextContents();
+    const sumOfItemPricesCents = itemPriceTexts.reduce((sum, text) => sum + parsePriceCents(text), 0);
+    const { itemTotalCents, taxCents, totalCents } = await this.getTotals();
+
+    expect(itemTotalCents).toBe(sumOfItemPricesCents);
+    expect(totalCents).toBe(itemTotalCents + taxCents);
   }
 }

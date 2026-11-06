@@ -5,7 +5,7 @@ Playwright + TypeScript UI test suite for [saucedemo.com](https://www.saucedemo.
 ## Stack
 
 - Playwright Test (`@playwright/test`), TypeScript, `strict: true`
-- Path aliases: `@pages/*` → `src/pages/*`, `@fixtures/*` → `src/fixtures/*`, `@data/*` → `src/data/*`
+- Path aliases: `@pages/*` → `src/pages/*`, `@fixtures/*` → `src/fixtures/*`, `@data/*` → `src/data/*`, `@utils/*` → `src/utils/*`
 - `testIdAttribute` is `data-test` (use `page.getByTestId(...)`, not raw CSS selectors, for test-id-tagged elements)
 
 ## Structure
@@ -13,6 +13,7 @@ Playwright + TypeScript UI test suite for [saucedemo.com](https://www.saucedemo.
 - `src/pages/` — Page Object classes (one per page, e.g. `LoginPage.ts`)
 - `src/fixtures/` — Playwright fixtures that instantiate and expose page objects to tests
 - `src/data/` — static test data (e.g. `users.ts`), exported as `as const satisfies Record<string, T>` objects, never inlined as string literals in specs
+- `src/utils/` — pure helper functions with no page/locator dependencies (e.g. parsing a price string to cents, reading a `Download` into text, parsing those lines into a typed object); page objects and specs import from here instead of duplicating parsing logic
 - `tests/` — spec files, import `test`/`expect` from `@fixtures/pages.fixture`, never directly from `@playwright/test`
 
 ## Page Object conventions

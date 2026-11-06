@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "lib": ["ES2022", "DOM"],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -14,7 +14,8 @@
     "paths": {
       "@pages/*": ["src/pages/*"],
       "@fixtures/*": ["src/fixtures/*"],
-      "@data/*": ["src/data/*"]
+      "@data/*": ["src/data/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "include": ["tests", "src", "playwright.config.ts"]
