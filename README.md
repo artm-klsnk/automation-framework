@@ -82,5 +82,5 @@ tests/                 # Spec files
 
 - [x] Cart flows (view, add, remove)
 - [x] Checkout flow
-- [ ] CI with GitHub Actions
+- [x] CI with GitHub Actions
 - [ ] Allure reporting

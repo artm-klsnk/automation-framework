@@ -15,6 +15,7 @@ export default defineConfig({
         baseURL: 'https://www.saucedemo.com',
         trace: 'on-first-retry',
         testIdAttribute: 'data-test',
+        headless: !!process.env.CI
       },
   testDir: './tests',
   /* Run tests in files in parallel */
