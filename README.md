@@ -32,6 +32,12 @@ npx playwright install --with-deps chromium
 npx playwright test
 ```
 
+Run headed (visible browser) instead:
+
+```bash
+npm run test:headed
+```
+
 Open the HTML report:
 
 ```bash
