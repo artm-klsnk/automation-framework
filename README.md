@@ -32,6 +32,12 @@ npx playwright install --with-deps chromium
 npx playwright test
 ```
 
+Run headed (visible browser) instead:
+
+```bash
+npm run test:headed
+```
+
 Open the HTML report:
 
 ```bash
@@ -82,5 +88,5 @@ tests/                 # Spec files
 
 - [x] Cart flows (view, add, remove)
 - [x] Checkout flow
-- [x] CI with GitHub Actions
+- [ ] CI with GitHub Actions
 - [ ] Allure reporting
