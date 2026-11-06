@@ -1,14 +1,16 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Download, expect, Locator, Page } from '@playwright/test';
 import { Footer } from '@pages/components/Footer';
 import { Header } from '@pages/components/Header';
 
-export class CheckoutCompletePage {
+class CheckoutCompletePage {
   readonly page: Page;
   readonly header: Header;
   readonly completeHeader: Locator;
   readonly completeText: Locator;
   readonly backToProductsButton: Locator;
+  readonly generatePdfFile: Locator;
   readonly footer: Footer;
+  lastDownload: Download | null = null;
 
   constructor(page: Page) {
     this.page = page;
@@ -16,6 +18,7 @@ export class CheckoutCompletePage {
     this.completeHeader = page.getByTestId('complete-header');
     this.completeText = page.getByTestId('complete-text');
     this.backToProductsButton = page.getByTestId('back-to-products');
+    this.generatePdfFile = page.getByTestId("generate-pdf-order");
     this.footer = new Footer(page);
   }
 
@@ -27,6 +30,14 @@ export class CheckoutCompletePage {
     await this.backToProductsButton.click();
   }
 
+  async generatePfdFile() {
+    const [download] = await Promise.all([
+      this.page.waitForEvent('download'),
+      this.generatePdfFile.click(),
+    ]);
+    this.lastDownload = download;
+  }
+
   async expectOrderComplete() {
     await this.header.expectVisible();
     await expect(this.completeHeader).toHaveText('Thank you for your order!');
@@ -34,4 +45,11 @@ export class CheckoutCompletePage {
     await expect(this.backToProductsButton).toBeVisible();
     await this.footer.expectVisible();
   }
+
+  expectPdfDownloaded() {
+    expect(this.lastDownload).not.toBeNull();
+    expect(this.lastDownload!.suggestedFilename()).toMatch(/\.pdf$/);
+  }
 }
+
+export default CheckoutCompletePage
