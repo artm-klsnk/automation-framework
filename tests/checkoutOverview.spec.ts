@@ -1,5 +1,4 @@
 import { test, expect } from '@fixtures/pages.fixture';
-import { productNames } from '@data/products';
 
 test('should display all page elements', async ({
   productPageForRegularUser,
@@ -17,14 +16,7 @@ test('should display the correct price next to each product', async ({
   checkoutOverviewPageForRegularUser,
 }) => {
   await productPageForRegularUser.goto();
-  const productPrices: Record<string, string> = Object.fromEntries(
-    await Promise.all(
-      productNames.map(async (product): Promise<[string, string]> => {
-        const card = productPageForRegularUser.card(product);
-        return [await card.name.innerText(), await card.price.innerText()];
-      })
-    )
-  );
+  const productPrices = await productPageForRegularUser.getProductPrices();
   await productPageForRegularUser.addAllProductsToCart();
   await checkoutOverviewPageForRegularUser.goto();
 

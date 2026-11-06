@@ -14,7 +14,8 @@
     "paths": {
       "@pages/*": ["src/pages/*"],
       "@fixtures/*": ["src/fixtures/*"],
-      "@data/*": ["src/data/*"]
+      "@data/*": ["src/data/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "include": ["tests", "src", "playwright.config.ts"]

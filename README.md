@@ -18,11 +18,11 @@ UI test automation framework for [Swag Labs](https://www.saucedemo.com) — a de
 | Cart     | Empty-cart state, added product matches the product page (description, price, quantity, remove button) — looped over every product, removing one/several/all products (card removal + badge count), clicking a product title opens that product's detail page |
 | Checkout (information) | Page elements, cart badge reflects the number of selected products, required-field validation errors (First Name, Last Name, Postal Code) |
 | Checkout (overview) | Page elements (QTY/description labels, payment/shipping info, price totals), price next to each product matches the product page, item total + tax reconcile with the displayed total, Cancel returns to the products page |
-| Checkout (complete) | Finish on the overview page lands on the order-confirmation page ("Thank you for your order!"), clicking "Generate PDF File" downloads a PDF receipt whose order date, ship-to name/postal code, item prices, and totals (item total + tax = total) match the order just placed |
+| Checkout (complete) | Finish on the overview page lands on the order-confirmation page ("Thank you for your order!"); after filling in checkout information, clicking "Generate PDF File" downloads a PDF receipt whose order date, ship-to name/postal code, item prices, and totals (item total, tax, total) match the order just placed (overview page totals and the sum of product prices) |
 
 ## Getting started
 
-Requires Node.js 20+.
+Requires Node.js 24+ (see `.nvmrc`) — `unpdf` requires it.
 
 ```bash
 git clone https://github.com/artm-klsnk/automation-framework.git
@@ -52,7 +52,8 @@ src/
     ProductDetailPage.ts # single-product detail page opened from a product title (products list or cart)
     components/       # Header, Footer — shared chrome reused across pages
   fixtures/           # Playwright fixtures exposing page objects to tests
-  data/                # Static test data: users, products (slugs, Product type, name list, random selectors), customer (random valid checkout info)
+  data/                # Static test data: users, products (slugs, Product type, name list, random selectors), customer (random valid checkout info), messages (shared copy strings)
+  utils/               # Pure helpers: price.ts (parse "$x.xx" to cents), pdf.ts (read a Download into text lines), orderReceipt.ts (parse those lines into a typed OrderReceipt)
 tests/                 # Spec files
 ```
 
@@ -71,8 +72,11 @@ tests/                 # Spec files
 - **Fixtures handle setup.** `productPageForRegularUser` and `cartPageForRegularUser` share a single
   login via a `regularUserSession` fixture, so specs start from the state they need without logging in twice.
 - **Page-level tests vs. user journeys.** Specs under `tests/` open the page under test directly via
-  `goto()` and verify that page in isolation. Multi-step user journeys (e.g. login → add to cart →
-  complete checkout) will live under `tests/e2e` instead of being folded into these page-level specs.
+  `goto()` and verify that page in isolation wherever a page's state doesn't depend on a prior step.
+  Checkout flow specs chain the steps that do depend on prior state (e.g. checkout information →
+  overview → complete, to produce a real order with real totals) rather than jumping straight to the
+  page under test. Journeys spanning unrelated areas (e.g. login → add to cart → complete checkout)
+  will live under `tests/e2e` instead of being folded into these page-level specs.
 
 ## Roadmap
 

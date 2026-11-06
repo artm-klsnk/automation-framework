@@ -1,5 +1,5 @@
 import { expect, Locator, Page } from '@playwright/test';
-import { products, type Product } from '@data/products';
+import { products, productNames, type Product } from '@data/products';
 import { Footer } from '@pages/components/Footer';
 import { Header } from '@pages/components/Header';
 
@@ -91,6 +91,17 @@ export class ProductsPage {
 
   async addAllProductsToCart() {
     await this.addToCart(...(Object.keys(this.cards) as Product[]));
+  }
+
+  async getProductPrices(productsToRead: Product[] = productNames): Promise<Record<string, string>> {
+    return Object.fromEntries(
+      await Promise.all(
+        productsToRead.map(async (product): Promise<[string, string]> => {
+          const card = this.card(product);
+          return [await card.name.innerText(), await card.price.innerText()];
+        })
+      )
+    );
   }
 
   async expectPageElementsVisible() {

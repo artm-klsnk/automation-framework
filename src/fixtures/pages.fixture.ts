@@ -4,7 +4,7 @@ import { ProductsPage } from '@pages/ProductsPage';
 import { CartPage } from '@pages/CartPage';
 import { CheckoutInformationPage } from '@pages/CheckoutInformationPage';
 import { CheckoutOverviewPage } from '@pages/CheckoutOverviewPage';
-import CheckoutCompletePage from '@pages/CheckoutCompletePage';
+import { CheckoutCompletePage } from '@pages/CheckoutCompletePage';
 import { ProductDetailPage } from '@pages/ProductDetailPage';
 import { users } from '@data/users';
 
