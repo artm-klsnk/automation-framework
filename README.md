@@ -1,5 +1,7 @@
 # Swag Labs UI Test Automation
 
+[![Playwright Tests](https://github.com/artm-klsnk/automation-framework/actions/workflows/playwright.yml/badge.svg)](https://github.com/artm-klsnk/automation-framework/actions/workflows/playwright.yml)
+
 UI test automation framework for [Swag Labs](https://www.saucedemo.com) — a demo e-commerce app — built with Playwright and TypeScript using the Page Object Model.
 
 ## Tech stack
@@ -29,7 +31,7 @@ git clone https://github.com/artm-klsnk/automation-framework.git
 cd automation-framework
 npm ci
 npx playwright install --with-deps chromium
-npx playwright test
+npm test
 ```
 
 Run headed (visible browser) instead:
@@ -41,7 +43,7 @@ npm run test:headed
 Open the HTML report:
 
 ```bash
-npx playwright show-report
+npm run test:report
 ```
 
 ## Project structure
@@ -88,5 +90,5 @@ tests/                 # Spec files
 
 - [x] Cart flows (view, add, remove)
 - [x] Checkout flow
-- [ ] CI with GitHub Actions
+- [x] CI with GitHub Actions
 - [ ] Allure reporting
