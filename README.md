@@ -7,6 +7,7 @@ UI test automation framework for [Swag Labs](https://www.saucedemo.com) — a de
 - [Playwright Test](https://playwright.dev/) — test runner and browser automation
 - TypeScript (`strict` mode)
 - Page Object Model + component objects
+- [unpdf](https://github.com/unjs/unpdf) — PDF text extraction, used to verify downloaded order receipts
 
 ## What's covered
 
@@ -17,7 +18,7 @@ UI test automation framework for [Swag Labs](https://www.saucedemo.com) — a de
 | Cart     | Empty-cart state, added product matches the product page (description, price, quantity, remove button) — looped over every product, removing one/several/all products (card removal + badge count), clicking a product title opens that product's detail page |
 | Checkout (information) | Page elements, cart badge reflects the number of selected products, required-field validation errors (First Name, Last Name, Postal Code) |
 | Checkout (overview) | Page elements (QTY/description labels, payment/shipping info, price totals), price next to each product matches the product page, item total + tax reconcile with the displayed total, Cancel returns to the products page |
-| Checkout (complete) | Finish on the overview page lands on the order-confirmation page ("Thank you for your order!"), clicking "Generate PDF File" downloads a PDF |
+| Checkout (complete) | Finish on the overview page lands on the order-confirmation page ("Thank you for your order!"), clicking "Generate PDF File" downloads a PDF receipt whose order date, ship-to name/postal code, item prices, and totals (item total + tax = total) match the order just placed |
 
 ## Getting started
 
