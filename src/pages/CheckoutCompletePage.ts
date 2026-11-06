@@ -64,9 +64,7 @@ export class CheckoutCompletePage {
   }
 
   expectReceiptItems(receipt: OrderReceipt, productPrices: Record<string, string>) {
-    for (const [name, price] of Object.entries(productPrices)) {
-      expect(receipt.itemPrices[name]).toBe(price);
-    }
+    expect(receipt.itemPrices).toEqual(productPrices);
   }
 
   expectReceiptTotals(receipt: OrderReceipt, overviewTotals: OverviewTotals, productPrices: Record<string, string>) {

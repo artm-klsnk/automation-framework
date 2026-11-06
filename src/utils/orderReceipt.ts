@@ -39,10 +39,13 @@ function parseOrderDate(lines: string[]): Date {
   expect(match, `unexpected "Order Date" format: "${line}"`).not.toBeNull();
   const [, monthName, day, year, hour12, minute, meridiem] = match!;
 
+  const monthIndex = MONTH_NAMES.indexOf(monthName);
+  expect(monthIndex, `unexpected month name in "Order Date" line: "${line}"`).toBeGreaterThanOrEqual(0);
+
   let hour = parseInt(hour12, 10) % 12;
   if (meridiem === 'PM') hour += 12;
 
-  return new Date(Number(year), MONTH_NAMES.indexOf(monthName), Number(day), hour, Number(minute));
+  return new Date(Number(year), monthIndex, Number(day), hour, Number(minute));
 }
 
 function parseShipTo(lines: string[]): { shipToName: string; shipToPostalCode: string } {
