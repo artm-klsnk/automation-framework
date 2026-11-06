@@ -27,7 +27,6 @@ export default defineConfig({
     baseURL: 'https://www.saucedemo.com',
     trace: 'on-first-retry',
     testIdAttribute: 'data-test',
-    headless: !!process.env.CI
   },
   /* Configure projects for major browsers */
   projects: [
